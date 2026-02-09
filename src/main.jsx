@@ -2,43 +2,51 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-
-// MUI imports
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Employee from './Employee/Employee.jsx';
 import { ThemeProvider, CssBaseline, createTheme, responsiveFontSizes } from '@mui/material';
 
-// Fonts via @fontsource
+
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
-
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
+import Project from './Project/Project.jsx';
 
-// Create theme
 let theme = createTheme({
   typography: {
-    fontFamily: 'Inter, sans-serif', // Body font
-    h1: { fontFamily: 'Poppins, sans-serif', fontWeight: 700, lineHeight: 1.2 },
-    h2: { fontFamily: 'Poppins, sans-serif', fontWeight: 600, lineHeight: 1.3 },
-    h3: { fontFamily: 'Poppins, sans-serif', fontWeight: 500, lineHeight: 1.3 },
-    h4: { fontFamily: 'Poppins, sans-serif', fontWeight: 500, lineHeight: 1.4 },
-    h5: { fontFamily: 'Poppins, sans-serif', fontWeight: 400, lineHeight: 1.4 },
-    h6: { fontFamily: 'Poppins, sans-serif', fontWeight: 400, lineHeight: 1.5 },
-    body1: { fontFamily: 'Inter, sans-serif', fontWeight: 400, lineHeight: 1.6 },
-    body2: { fontFamily: 'Inter, sans-serif', fontWeight: 400, lineHeight: 1.6 },
-    button: { fontFamily: 'Inter, sans-serif', textTransform: 'none' }, // Prevent uppercase buttons
+    fontFamily: 'Inter, sans-serif',
+    h1: { fontFamily: 'Poppins, sans-serif', fontWeight: 700 },
+    h2: { fontFamily: 'Poppins, sans-serif', fontWeight: 600 },
+    h3: { fontFamily: 'Poppins, sans-serif', fontWeight: 500 },
+    h4: { fontFamily: 'Poppins, sans-serif', fontWeight: 500 },
+    body1: { fontFamily: 'Inter, sans-serif' },
+    button: { textTransform: 'none' },
   },
 });
 
-// Make typography responsive
 theme = responsiveFontSizes(theme);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <BrowserRouter>
+
+      {/* 🔽 UNDERLINED CHANGE */}
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+
+        <Routes>
+          <Route path='/' element={<App />} />
+
+          {/* 🔽 UNDERLINED CHANGE (removed space & lowercase) */}
+          <Route path='/employee' element={<Employee />} />
+          <Route path='/project' element={<Project/>}/>
+        </Routes>
+
+      </ThemeProvider>
+
+    </BrowserRouter>
   </StrictMode>
 );
