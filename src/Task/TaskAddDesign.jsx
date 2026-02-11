@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import AddIcon from "@mui/icons-material/Add";
-import { Grid, TextField, Typography, Alert, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Grid, TextField, Typography, Alert,FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
@@ -18,15 +18,16 @@ boxShadow: 24,
 p: 4,
 };
 
-export default function ProjectAddDesign() {
+export default function TaskAddDesign() {
 const [open, setOpen] = React.useState(false);
 
 const [formData, setFormData] = React.useState({
-ProjectName: "",
-Client: "",
+TaskName: "",
+Project: "",
+Employee: "",
 StartDate: "",
-EndDate: "",
-Assigned: "",
+DueDate: "",
+Status:'',
 });
 
 
@@ -44,7 +45,7 @@ const handleAddProject = async (e) => {
 e.preventDefault();
 
 // ❌ Validation first
-if (!formData.ProjectName || !formData.Client ) {
+if (!formData.TaskName || !formData.Project || !formData.Employee ) {
 setAlertType("error");
 setAlertMsg("ProjectName, Client and Assigned are required fields");
 setShowAlert(true);
@@ -52,25 +53,27 @@ return;
 }
 
 try {
-await addDoc(collection(db, "Projects"), {
-ProjectName: formData.ProjectName,
-Client: formData. Client,
+await addDoc(collection(db, "Task"), {
+TaskName: formData.TaskName,
+Project: formData. Project,
+Employee: formData.Employee,
 StartDate: formData.StartDate,
-EndDate: formData.EndDate,
-Assigned: formData.Assigned,
+DueDate: formData.DueDate,
+Status: formData. Status,
 });
 
 // ✅ Success
 setAlertType("success");
-setAlertMsg("Employee Added Successfully");
+setAlertMsg("Task Added Successfully");
 setShowAlert(true);
 
 setFormData({
-ProjectName: "",
-Client: "",
+TaskName: "",
+Project: "",
+Employee: "",
 StartDate: "",
-EndDate: "",
-Assigned: "",
+DueDate: "",
+Status:'',
 });
 } catch {
 setAlertType("error");
@@ -82,7 +85,7 @@ setShowAlert(true);
 return (
 <div>
 <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpen}>
-AddProject
+AddTask
 </Button>
 
 <Modal open={open} onClose={handleClose}>
@@ -99,9 +102,9 @@ onClose={() => setShowAlert(false)}
 )}
 
 <Box sx={{ mb: 2 }}>
-<Typography variant="h5">Add Project Details</Typography>
+<Typography variant="h5">Add Task Details</Typography>
 <Typography variant="body2" color="text.secondary">
-Add Project information below
+Add Task information below
 </Typography>
 </Box>
 
@@ -110,11 +113,11 @@ Add Project information below
 <Grid size={12}>
 <TextField
 fullWidth
-label="ProjectName"
+label="TaskName"
 size="small"
-value={formData.ProjectName}
+value={formData.TaskName}
 onChange={(e) =>
-setFormData({ ...formData, ProjectName: e.target.value })
+setFormData({ ...formData, TaskName: e.target.value })
 }
 />
 </Grid>
@@ -122,11 +125,22 @@ setFormData({ ...formData, ProjectName: e.target.value })
 <Grid size={{md:6,xs:12}}>
 <TextField
 fullWidth
-label="Client"
+label="Project"
 size="small"
-value={formData.Client}
+value={formData.Project}
 onChange={(e) =>
-setFormData({ ...formData, Client: e.target.value })
+setFormData({ ...formData, Project: e.target.value })
+}
+/>
+</Grid>
+<Grid size={{md:6,xs:12}}>
+<TextField
+fullWidth
+label="Employee"
+size="small"
+value={formData.Employee}
+onChange={(e) =>
+setFormData({ ...formData, Employee: e.target.value })
 }
 />
 </Grid>
@@ -150,12 +164,12 @@ shrink: true,
 <Grid size={{md:6,xs:12}}>
 <TextField
 fullWidth
-label="EndDate"
+label="DueDate"
 size="small"
 type="date"
-value={formData.EndDate}
+value={formData.DueDate}
 onChange={(e) =>
-setFormData({ ...formData, EndDate: e.target.value })
+setFormData({ ...formData, DueDate: e.target.value })
 }
 InputLabelProps={{
 shrink: true,
@@ -163,14 +177,12 @@ shrink: true,
 />
 </Grid>
 
-<Grid size={{md:6,xs:12}}>
-
+<Grid size={{md:12,xs:12}}>
 <FormControl fullWidth>
-<InputLabel id="demo-simple-select-label" sx={{textAlign:'center'}}>Status</InputLabel>
+<InputLabel id="demo-simple-select-label">Status</InputLabel>
 <Select
 labelId="demo-simple-select-label"
 id="demo-simple-select"
-size="small"
 value={FormData.Status}
 label="Status"
 onChange={(e) =>
@@ -182,7 +194,6 @@ setFormData({ ...formData, Status: e.target.value })
 <MenuItem value={'on hold'}>on hold</MenuItem>
 </Select>
 </FormControl>
-
 </Grid>
 </Grid>
 

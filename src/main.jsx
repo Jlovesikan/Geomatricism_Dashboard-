@@ -14,6 +14,7 @@ import '@fontsource/poppins/700.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import Project from './Project/Project.jsx';
+import Task from './Task/Task.jsx';
 
 let theme = createTheme({
   typography: {
@@ -43,6 +44,7 @@ createRoot(document.getElementById('root')).render(
           {/* 🔽 UNDERLINED CHANGE (removed space & lowercase) */}
           <Route path='/employee' element={<Employee />} />
           <Route path='/project' element={<Project/>}/>
+           <Route path='/task' element={<Task/>}/>
         </Routes>
 
       </ThemeProvider>

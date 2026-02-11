@@ -29,14 +29,20 @@ const style = {
 const columns = [
 
   {
-    field: 'ProjectName',
-    headerName: 'ProjectName',
+    field: 'TaskName',
+    headerName: 'TaskName',
     width: 200,
     editable: false,
   },
   {
-    field: 'Client',
-    headerName: 'Client',
+    field: 'Project',
+    headerName: 'Project',
+    width: 200,
+    editable: false,
+  },
+   {
+    field: 'Employee',
+    headerName: 'Employee',
     width: 200,
     editable: false,
   },
@@ -47,22 +53,12 @@ const columns = [
     editable: false,
   },
   {
-    field: 'EndDate',
-    headerName: 'EndDate',
+    field: 'DueDate',
+    headerName: 'DueDate',
     width: 110,
     editable: false,
   },
-  {
-    field: 'Assigned',
-    headerName: 'Assigned',
-    width: 200,
-    editable: false,
-    renderCell: (params) => (
-    <Typography variant='body2' whiteSpace="pre-line">
-      {params.value}
-    </Typography>
-  ),
-  },
+  
 {
   field: 'Status',
   headerName: 'Status',
@@ -96,40 +92,12 @@ const columns = [
 
 
 
-export default function ProjectData() {
+export default function TaskData() {
 
 const [rows, setRows] = useState([]);
-const [employeeMap, setEmployeeMap] = useState({});
+
 
 //Read Data
-
-useEffect(() => {
-const fetchEmployees = async () => {
-const snapshot = await getDocs(collection(db, "Employees ")); // ✅ FIXED
-
-const map = {};
-
-snapshot.docs.forEach((doc) => {
-const { Project, Name } = doc.data();
-if (!Project || !Name) return;
-
-const key = Project.trim().toLowerCase(); // normalize
-
-if (!map[key]) {
-map[key] = [];
-}
-
-map[key].push(Name);
-});
-
-setEmployeeMap(map); // ✅ store separately
-};
-
-fetchEmployees();
-}, []);
-
-
-
 
 
 useEffect(() => {
@@ -137,7 +105,7 @@ useEffect(() => {
 const fetchProjects = async () => {
 try {
 
-const querySnapshot = await getDocs(collection(db, "Projects"));
+const querySnapshot = await getDocs(collection(db, "Task"));
 
 console.log("Docs size:", querySnapshot.size);
 
@@ -147,11 +115,11 @@ console.log("Doc Data:", doc.data());
 
 return {
 id: doc.id,
-ProjectName: doc.data(). ProjectName,
-Client: doc.data().Client,
+TaskName: doc.data().TaskName,
+Project: doc.data().Project,
 StartDate: doc.data().StartDate,
-EndDate: doc.data().EndDate,
-Assigned: "", 
+Employee: doc.data().Employee,
+DueDate: doc.data().DueDate,
  Status: doc.data().Status || "progress",// ✅ ADD
 };
 });
@@ -169,12 +137,7 @@ console.error("Fetch error:", error);
 fetchProjects();
 }, []);
 
-const finalRows = rows.map((row) => ({
-  ...row,
-  Assigned:
-    employeeMap[row.ProjectName?.trim().toLowerCase()]?.join(", ")
-    || "No one",
-}));
+
 
 //Read Data end
 
@@ -197,8 +160,8 @@ setRows((prev) => prev.filter((row) => row.id !== id));
 const [editOpen, setEditOpen] = useState(false);
 const [editData, setEditData] = useState(null);
 
-const handleEdit = (finalRows) => {
-  setEditData(finalRows); // save data to edit
+const handleEdit = (rows) => {
+  setEditData(rows); // save data to edit
   setEditOpen(true); // open modal
 }
 
@@ -210,7 +173,7 @@ return (
 
 <DataGrid
 
-rows={finalRows}
+rows={rows}
 columns={[
 ...columns,
 {
@@ -245,9 +208,9 @@ onClick={() => handleDelete(params.id)}
 
 <Box sx={{ mb: 3 }}>
 
-<Typography variant="h5">Update Project Details</Typography>
+<Typography variant="h5">Update Task Details</Typography>
 <Typography variant="body2" color="text.secondary">
-Update Project information below
+Update Task information below
 </Typography>
 
 </Box>
@@ -259,11 +222,11 @@ Update Project information below
 
 <TextField
 fullWidth
-label="ProjectName"
+label="TaskName"
 size="small"
 sx={{ mb: 1 }}
-value={editData?.ProjectName || ""}
-onChange={(e) => setEditData({ ...editData, ProjectName: e.target.value })}
+value={editData?.TaskName || ""}
+onChange={(e) => setEditData({ ...editData, TaskName: e.target.value })}
 />
 
 </Grid>
@@ -272,11 +235,24 @@ onChange={(e) => setEditData({ ...editData, ProjectName: e.target.value })}
 
 <TextField
 fullWidth
-label="Client"
+label="Project"
 size="small"
 sx={{ mb: 1 }}
-value={editData?.Client || ""}
-onChange={(e) => setEditData({ ...editData, Client: e.target.value })}
+value={editData?.Project || ""}
+onChange={(e) => setEditData({ ...editData, Project: e.target.value })}
+/>
+
+</Grid>
+
+<Grid size={12}>
+
+<TextField
+fullWidth
+label="Employee"
+size="small"
+sx={{ mb: 1 }}
+value={editData?.Employee || ""}
+onChange={(e) => setEditData({ ...editData, Employee: e.target.value })}
 />
 
 </Grid>
@@ -303,12 +279,12 @@ shrink: true,
 
 <TextField
 fullWidth
-label="EndDate"
+label="DueDate"
 type='date'
 size="small"
 sx={{ mb: 1 }}
-value={editData?.EndDate || ""}
-onChange={(e) => setEditData({ ...editData, EndDate: e.target.value })}
+value={editData?.DueDate || ""}
+onChange={(e) => setEditData({ ...editData, DueDate: e.target.value })}
 InputLabelProps={{
 shrink: true,
 }}
@@ -338,17 +314,18 @@ onChange={(e) => setEditData({ ...editData, Status: e.target.value })}
 </Grid> 
 
 
-<Box sx={{ display: "flex", justifyContent: "space-between" }}>
+<Box sx={{ display: "flex", justifyContent: "space-between",mt:1 }}>
 <Button color="error" onClick={() => setEditOpen(false)}>Cancel</Button>
 <Button
 variant="contained"
 onClick={async () => {
-await updateDoc(doc(db, "Projects", editData.id), {
-ProjectName: editData.ProjectName,
-Client: editData.Client,
+await updateDoc(doc(db, "Task", editData.id), {
+TaskName: editData.TaskName,
+Project: editData.Project,
+Employee: editData.Employee,
 StartDate: editData.StartDate,
-EndDate: editData.EndDate,
-Status:editData.Status
+DueDate: editData.DueDate,
+Status: editData.Status,
 });
 setRows((prev) =>
 prev.map((r) => (r.id === editData.id ? editData : r))

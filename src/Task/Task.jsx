@@ -12,21 +12,21 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Collapse from '@mui/material/Collapse';
-import {Avatar, TextField, InputAdornment, Button, Container, Grid } from "@mui/material";
+import {Avatar, TextField, InputAdornment, Container, Grid, Divider } from "@mui/material";
 import {Dashboard as DashboardIcon,People as PeopleIcon,
 Business as BusinessIcon,Task as TaskIcon,BarChart as BarChartIcon,
 Settings as SettingsIcon,Logout as LogoutIcon,
 ExpandLess,ExpandMore,} from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
-import HomeCard from './welcomePage/homeCard'
-import ProjectProgressChart from './welcomePage/lineChart'
-import DonutChart from './welcomePage/pieChart'
-import Deadlines from './welcomePage/leftDeadline'
-import Calendar from './welcomePage/calander';
 import { Link, useLocation } from 'react-router-dom';
+import AddDesign from './AddDesign';
+import TaskData from './TaskData';
+
+
+
 
 const drawerWidth = 240;
-function App() {
+function Task() {
 const [mobileOpen, setMobileOpen] = React.useState(false);
 const [isClosing, setIsClosing] = React.useState(false);
 const location = useLocation();
@@ -181,7 +181,7 @@ sx={{ width: {md:'300px',xs:'150px' }}} // Search Bar அகலம்
 InputProps={{
 startAdornment: (
 <InputAdornment position="start">
-  <SearchIcon />
+<SearchIcon />
 </InputAdornment>
 ),
 }}
@@ -224,60 +224,28 @@ open
 {drawer}
 </Drawer>
 </Box>
-
 <Box
 component="main"
-sx={{ width: { sm: `calc(100% - ${drawerWidth}px)` } ,mt:1}}
+sx={{ width: { sm: `calc(100% - ${drawerWidth}px)`,xs:'100%' } ,mt:1}}
 >
 <Toolbar />
-<Grid 
-container           
-spacing={2}        
-sx={{ height: '100%',
-
-}}
->
-
-<Grid size={{md:12}}>
-<Box sx={{}}>
-<HomeCard/>
-</Box>
+<Container maxWidth='xl'>
+<Grid size={12} sx={{mt:1}}>
+<AddDesign/>
+<Divider/>
+</Grid>
+<Grid size={12} sx={{mt:2}}>
+<TaskData/>     
 </Grid>
 
-<Grid size={{md:8, xs:12,sm:12}}>
-<Box sx={{ml:{md:2,xs:0},
-
-}}>
-<ProjectProgressChart/>
-</Box>
-</Grid>
-
-<Grid size={{md:4,xs:12,sm:12}}>
-<Box sx={{mr:{md:1,xs:0,sm:0},}}>
-<DonutChart/>
-</Box>
-</Grid>
-
-<Grid size={{md:8, xs:12,sm:12}}>
-<Box sx={{ml:{md:2,xs:0},
-
-}}>
-<Deadlines/>
-</Box>
-</Grid>
-
-<Grid size={{md:4,xs:12,sm:12}}>
-<Box sx={{mr:{md:1,xs:0,sm:0},mb:5}}>
-<Calendar/>
-</Box>
-</Grid>
-</Grid>
+</Container>
 
 </Box>
 </Box>
+
 
 );
 }
 
 
-export default App
+export default Task
