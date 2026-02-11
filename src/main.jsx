@@ -2,10 +2,9 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'; // Navigate சேர்த்துள்ளேன்
 import Employee from './Employee/Employee.jsx';
 import { ThemeProvider, CssBaseline, createTheme, responsiveFontSizes } from '@mui/material';
-
 
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/500.css';
@@ -15,6 +14,8 @@ import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import Project from './Project/Project.jsx';
 import Task from './Task/Task.jsx';
+import Login from './Login/Login.jsx';
+import ProtectedLogin from './Login/ProductLogin.jsx';
 
 let theme = createTheme({
   typography: {
@@ -33,22 +34,36 @@ theme = responsiveFontSizes(theme);
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-
-      {/* 🔽 UNDERLINED CHANGE */}
       <ThemeProvider theme={theme}>
         <CssBaseline />
-
         <Routes>
-          <Route path='/' element={<App />} />
+        
+          <Route path="/login" element={<Login />} />
+          
+         
+          <Route 
+            path="/home" 
+            element={<ProtectedLogin> <App /> </ProtectedLogin>} 
+          />
+          <Route 
+            path="/employee" 
+            element={<ProtectedLogin> <Employee /> </ProtectedLogin>} 
+          />
+          <Route 
+            path="/project" 
+            element={<ProtectedLogin> <Project /> </ProtectedLogin>} 
+          />
+          <Route 
+            path="/task" 
+            element={<ProtectedLogin> <Task /> </ProtectedLogin>} 
+          />
 
-          {/* 🔽 UNDERLINED CHANGE (removed space & lowercase) */}
-          <Route path='/employee' element={<Employee />} />
-          <Route path='/project' element={<Project/>}/>
-           <Route path='/task' element={<Task/>}/>
+          
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+          
         </Routes>
-
       </ThemeProvider>
-
     </BrowserRouter>
   </StrictMode>
 );

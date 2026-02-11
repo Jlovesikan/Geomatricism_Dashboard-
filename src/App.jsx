@@ -23,13 +23,28 @@ import ProjectProgressChart from './welcomePage/lineChart'
 import DonutChart from './welcomePage/pieChart'
 import Deadlines from './welcomePage/leftDeadline'
 import Calendar from './welcomePage/calander';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { signOut } from "firebase/auth";
+import { auth } from "./firebase/config";
 
 const drawerWidth = 240;
 function App() {
 const [mobileOpen, setMobileOpen] = React.useState(false);
 const [isClosing, setIsClosing] = React.useState(false);
 const location = useLocation();
+const navigate = useNavigate();
+
+
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout Error:", error)
+    }
+  };
+
 const handleDrawerClose = () => {
 setIsClosing(true);
 setMobileOpen(false);
@@ -52,19 +67,19 @@ setOpenManagement(!openManagement);
 };
 
 const menuItems = [
-{ text: "Dashboard",path:'/', icon: <DashboardIcon sx={{ color: "#061a52" }} /> },
+{ text: "Dashboard",path:'/home', icon: <DashboardIcon sx={{ color: "#061a52" }} /> },
 {
 text: "Management",
 icon: <PeopleIcon sx={{ color: "#e9b91d" }} />,
 subItems: [
 { text: "Employees",path: '/employee', icon: <PeopleIcon /> },
 { text: "Projects",path: '/project', icon: <BusinessIcon /> },
-{ text: "Tasks",path: '/task', icon: <TaskIcon /> },
+{ text: "Tasks",path: '/task', icon: <TaskIcon />,},
 ],
 },
 { text: "Reports", path: '/reports', icon: <BarChartIcon sx={{ color: "#ee5a2d" }} /> },
 { text: "Settings",path: '/setting', icon: <SettingsIcon /> },
-{ text: "Logout",path: '/logout', icon: <LogoutIcon /> },
+{ text: "Logout",path: '/logout', icon: <LogoutIcon />,action:handleLogout },
 ];
 
 const drawer = (

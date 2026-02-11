@@ -18,9 +18,11 @@ Business as BusinessIcon,Task as TaskIcon,BarChart as BarChartIcon,
 Settings as SettingsIcon,Logout as LogoutIcon,
 ExpandLess,ExpandMore,} from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/config";
 import AddDesign from './AddDesign';
-import TaskData from './TaskData';
+import TaskData from './TaskData'
 
 
 
@@ -30,6 +32,20 @@ function Task() {
 const [mobileOpen, setMobileOpen] = React.useState(false);
 const [isClosing, setIsClosing] = React.useState(false);
 const location = useLocation();
+
+const navigate = useNavigate();
+
+
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout Error:", error)
+    }
+  };
+
 const handleDrawerClose = () => {
 setIsClosing(true);
 setMobileOpen(false);
@@ -52,7 +68,7 @@ setOpenManagement(!openManagement);
 };
 
 const menuItems = [
-{ text: "Dashboard",path:'/', icon: <DashboardIcon sx={{ color: "#061a52" }} /> },
+{ text: "Dashboard",path:'/home', icon: <DashboardIcon sx={{ color: "#061a52" }} /> },
 {
 text: "Management",
 icon: <PeopleIcon sx={{ color: "#e9b91d" }} />,
@@ -64,7 +80,7 @@ subItems: [
 },
 { text: "Reports", path: '/reports', icon: <BarChartIcon sx={{ color: "#ee5a2d" }} /> },
 { text: "Settings",path: '/setting', icon: <SettingsIcon /> },
-{ text: "Logout",path: '/logout', icon: <LogoutIcon /> },
+{ text: "Logout",path: '/logout', icon: <LogoutIcon />,action:handleLogout },
 ];
 
 const drawer = (
@@ -106,8 +122,9 @@ selected={location.pathname === sub.path}
 ) : (
 <ListItemButton
 key={index}
-component={Link}                  // ___UNDERLINE CHANGE___
-to={item.path || '#'}             // ___UNDERLINE CHANGE___
+component={item.action ? 'div' : Link}                 
+to={!item.action ? (item.path || '#') : undefined}
+onClick={item.action ? item.action : undefined}             // ___UNDERLINE CHANGE___
 >
 <ListItemIcon>{item.icon}</ListItemIcon>
 <ListItemText primary={item.text} />
