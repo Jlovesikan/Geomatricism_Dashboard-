@@ -86,7 +86,7 @@ export default function Login() {
         direction="row"
         sx={{ width: "100vw", height: "100vh" }}
       >
-        <Grid size={6}>
+        <Grid size={{md:6,xs:12}}>
           <Box
             sx={{
               height: "100%",
@@ -95,11 +95,12 @@ export default function Login() {
               justifyContent: "center",
             }}
           >
-            <Container maxWidth="xs">
+            <Container maxWidth="sm">
               <Paper
                 elevation={3}
                 sx={{
                   height: "100%",
+                  width:'100%',
                   px: 5,
                   py: 5,
                 }}
@@ -115,7 +116,7 @@ export default function Login() {
                       <Typography variant="h4" color="#092880">Login</Typography>
                     </Box>
                   </Grid>
-                  <Grid size={12}>
+                  <Grid size={12} >
                     <TextField  
                     fullWidth 
                     label="Email" 
@@ -182,7 +183,7 @@ export default function Login() {
                       }}
                     />
                   </Grid>
-                  <Grid size={12} >
+                  <Grid size={12}  >
                     <Button
                       fullWidth
                       variant="contained"
@@ -201,7 +202,7 @@ export default function Login() {
             </Container>
           </Box>
         </Grid>
-        <Grid size={6}>
+        <Grid size={{md:6}} sx={{display:{md:'block',xs:'none'}}}>
           <Box
             sx={{
               bgcolor: "#092880",
